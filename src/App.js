@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import store from './store';
 import Header from './header/header';
 import Mouse from './utils/Mouse';
-import { chnageMousXY } from './actions'
 import Content3  from './three-test/three-test';
 //import Footer from './header/footer';
 
