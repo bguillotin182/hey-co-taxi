@@ -18,7 +18,7 @@ class Header extends Component {
         const { isConnected } = this.state;
 
         if (isConnected) {
-            return <h1> HELLO WORLD </h1>;
+            return <h1> HELLO NEW WORLD </h1>;
         } else {
             return <h3> Please connect before enter application <input type="button" onClick={this.connect} label=" Click to connect " name="button" /></h3>;
         }
