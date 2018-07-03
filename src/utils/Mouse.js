@@ -12,11 +12,18 @@ class Mouse extends Component {
     }
 
     componentWillUnmount() {
-        console.log('Here is component UnMount');
+        // console.log('Here is component UnMount');
     }
 
     render() {
         return null;
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        x: state.x,
+        y: state.y,
     }
 }
 

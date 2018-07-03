@@ -1,4 +1,6 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { createEpicMiddleware } from 'redux-observable';
+import { fetchUserEpic } from './utils/user';
 
 const initialState = {
     x: 0,
@@ -6,12 +8,18 @@ const initialState = {
     user: {
         firstName: 'Benoit',
         lastName: 'GUILLOTIN',
-    }
+    },
+    isConnected: false,
 }
 
 function reducer(state=initialState, {type, payload}) {
     switch (type) {
-        case 'USER_SET':
+        case 'CONNECT_USER' :
+            return {
+                ...state,
+                isConnected: payload,
+            }
+        case 'UPDATE_USER':
             return {
                 ...state,
                 user: payload.user,
@@ -22,11 +30,31 @@ function reducer(state=initialState, {type, payload}) {
                 x: payload.x,
                 y: payload.y,
             }
+        case 'FETCH_USER': {
+            return {
+                ...state,
+                [payload]: payload,
+            }
+        }
+        case 'FETCH_USER_FULFILLED':
+          return {
+            ...state,
+            // `login` is the username
+            [payload.login]: payload
+        }
         default:
             return state;
     }
 }
 
-const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const epicMiddleware = createEpicMiddleware();
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(reducer, composeEnhancers(applyMiddleware(epicMiddleware)));
+
+epicMiddleware.run(fetchUserEpic);
+
+//const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 export default store;

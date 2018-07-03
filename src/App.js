@@ -3,36 +3,49 @@ import { connect } from 'react-redux';
 import store from './store';
 import Header from './header/header';
 import Mouse from './utils/Mouse';
-//import Content3  from './three-test/three-test';
+import Footer from './footer/footer';
+import Content3  from './three-test/three-test';
+import { userGet, rangeGet, reduceWinner, testObservable } from './utils/user';
 
 import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
+// Immediate Execute user GET.
+// rangeGet(1, 200);
 
-  render() {
-    const { x, y } = this.props;
-  //      <Content3 />
-    return (
+userGet();
+
+console.log(reduceWinner());
+
+testObservable();
+
+function App({x, y, isConnected}) {
+
+  const isUserConnected = (isConnected) => isConnected;
+
+  return (
       <div className="App">
-        <Header />
-        <strong> X : {x} - Y : {y} </strong>
-        <Mouse render={ ({x, y}) => <strong> X: {x} - Y : { y } </strong>} toto={ () => 'toto' } />
-
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <header>
+          <Header />
+          <strong> X : {x} - Y : {y} </strong>
+        </header>
+        <main>
+          <Mouse />
+          <div>{ isUserConnected(isConnected) ? <Content3 /> : null }</div>
+        </main>
+        <footer className="Footer">
+          <Footer />
+        </footer>
       </div>
-    );
-  }
+  )
 }
-
-
 
 const mapStateToProps = (state) => {
   return {
     x: state.x,
     y: state.y,
+    user: state.user,
+    isConnected: state.isConnected,
   }
 }
 

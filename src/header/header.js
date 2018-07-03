@@ -1,28 +1,28 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { fetchUser, updateUser, connectUser } from '../actions'
 
-class Header extends Component {
-    state: {
-        isConnected: boolean,
+function Header(props) {
+    const { user, isConnected } = props;
+
+    const connect = () => {
+        props.dispatch(connectUser(!props.isConnected));
     }
 
-    constructor() {
-        super();
-        this.state = {isConnected: false}
-    }
-
-    connect = () => {
-        this.setState({isConnected: true});
-    }
-
-    render() {
-        const { isConnected } = this.state;
-
-        if (isConnected) {
-            return <h1> HELLO NEW WORLD </h1>;
-        } else {
-            return <h3> Please connect before enter application <input type="button" onClick={this.connect} label=" Click to connect " name="button" /></h3>;
-        }
+    if (isConnected) {
+        return <h1> HELLO NEW WORLD <button onClick={connect} value="" name="button"> Click to discconnect </button></h1>;
+    } else {
+        return <h3> Please connect before enter application <button onClick={connect}> Click to connect </button></h3>;
     }
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+    return {
+        x: state.x,
+        y: state.y,
+        user: state.user,
+        isConnected: state.isConnected,
+    }
+}
+
+export default connect(mapStateToProps)(Header);
