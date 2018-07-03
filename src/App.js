@@ -4,7 +4,6 @@ import store from './store';
 import Header from './header/header';
 import Mouse from './utils/Mouse';
 import Content3  from './three-test/three-test';
-import Footer from './header/footer';
 
 import logo from './logo.svg';
 import './App.css';
