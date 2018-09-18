@@ -32,14 +32,12 @@ export const testObservable = () => {
 
     combineLatest(observables).subscribe(x => console.log(x));
 
-
     var clicks = fromEvent(document, 'click');
     clicks.subscribe(x => console.log(x));
-
 }
 
 export const reduceWinner = () => {
-    const winnerResult = ["tim", "tom", "tom", "toto", "dudu", "fifi"];
+    const winnerResult = ["tim", "tim", "tutu", "tom", "tom", "tim", "dudu", "fifi"];
 
     return winnerResult.reduce((acc, value) => {
         let existingCandidate = acc.find(x => x.hasOwnProperty(value));
@@ -51,7 +49,9 @@ export const reduceWinner = () => {
         return acc;
     }, [])
     .reduce((acc, current) => {
+        //return (Object.entries(current)[0][1] > Object.entries(acc)[0][1]) ? current : acc;
         return (current[Object.keys(current)] > acc[Object.keys(acc)]) ? current : acc;
+        //return (current[Object.keys(acc)[0]] > acc[Object.keys(value)[0]]) ? current : acc;
     });
 }
 
