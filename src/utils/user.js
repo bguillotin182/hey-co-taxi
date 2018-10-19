@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
 import store from '../store';
-import { connect } from 'react-redux';
-import { BehaviorSubject, Observable, Subject, ReplaySubject, range, concat, interval, of, from, combineLatest, fromEvent } from 'rxjs';
+import { BehaviorSubject, range, concat, interval, fromEvent, forkJoin } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import { filter, map, mergeMap, delay, take, startWith  } from 'rxjs/operators';
+import { filter, map, mergeMap, take } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { fetchUser, fetchUserFulfilled, connectUser } from '../actions';
+import { fetchUser, fetchUserFulfilled, changeMouseClickPositionXY, cubeRotation } from '../actions';
+import ACTION_TYPE from '../constants';
+import * as THREE from 'three';
 
 export const rangeGet = (start, end) => {
     range(start, end)
@@ -14,45 +14,44 @@ export const rangeGet = (start, end) => {
 }
 
 export const testObservable = () => {
-    const formInput$ = new BehaviorSubject('foo');
-    formInput$.subscribe(x => console.log(x))
+    // const formInput$ = new BehaviorSubject('foo');
+    // formInput$.subscribe(x => console.log(x))
+    // formInput$.next('toto');
+    // formInput$.next('fifi');
 
-    formInput$.next('toto');
-    formInput$.next('fifi');
-
-    const timer = interval(1000).pipe(take(5));
+    const timer = interval(1000).pipe(take(2));
     const sequence = range(1, 10);
 
-    // combineLatest(timer, sequence).subscribe(x => console.log(x));
-    // concat(timer, sequence).subscribe(x => console.log(x));
-
-    const observables = [1, 5, 10].map(
-        n => of(n).pipe(delay(n * 1000), startWith(0))
-    );
-
-    combineLatest(observables).subscribe(x => console.log(x));
+//    combineLatest(timer, sequence).subscribe(x => console.log(x));
+    forkJoin(timer, sequence).subscribe(x => console.log(x));
+    concat(timer, sequence).subscribe(x => console.log(x));
+    // const observables = [1, 5, 10].map(
+    //     n => of(n).pipe(delay(n * 1000), startWith(0))
+    // );
+    // combineLatest(observables).subscribe(x => console.log(x));
 
     var clicks = fromEvent(document, 'click');
-    clicks.subscribe(x => console.log(x));
-}
+    clicks.subscribe(x => {
+        const {clientX, clientY } = x;
+        const { innerWidth, innerHeight } = window;
+        
+        let moveX;
+        let moveY; 
+        moveX = (clientX >= (innerWidth / 2)) ? 0.1 : -0.1;
+        moveY = (clientY >= (innerHeight /2)) ? -0.1 : 0.1;
 
-export const reduceWinner = () => {
-    const winnerResult = ["tim", "tim", "tutu", "tom", "tom", "tim", "dudu", "fifi"];
+        const cubeRotationCoordinate = store.getState().cubeRotation;;
+        
 
-    return winnerResult.reduce((acc, value) => {
-        let existingCandidate = acc.find(x => x.hasOwnProperty(value));
-        if (!acc || existingCandidate) {
-            existingCandidate[value]++;
-        } else {
-            acc.push({ [value] : 1 });
-        }
-        return acc;
-    }, [])
-    .reduce((acc, current) => {
-        //return (Object.entries(current)[0][1] > Object.entries(acc)[0][1]) ? current : acc;
-        return (current[Object.keys(current)] > acc[Object.keys(acc)]) ? current : acc;
-        //return (current[Object.keys(acc)[0]] > acc[Object.keys(value)[0]]) ? current : acc;
+        store.dispatch(cubeRotation(new THREE.Euler(
+            cubeRotationCoordinate.x + moveX,
+            cubeRotationCoordinate.y + moveY,
+            0
+          ),));
+
+        store.dispatch(changeMouseClickPositionXY(clientX, clientY))
     });
+    
 }
 
 export const userGet = () => {
@@ -60,7 +59,7 @@ export const userGet = () => {
 }
 
 export const fetchUserEpic = action$ => action$.pipe(
-    ofType('FETCH_USER'),
+    ofType(ACTION_TYPE.FETCH_USER),
     mergeMap(action =>
         ajax.getJSON(`https://api.github.com/users/${action.payload}`).pipe(
             map(response => fetchUserFulfilled(response))

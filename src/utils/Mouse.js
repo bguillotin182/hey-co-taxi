@@ -20,11 +20,4 @@ class Mouse extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        x: state.x,
-        y: state.y,
-    }
-}
-
 export default connect()(Mouse);

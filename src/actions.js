@@ -1,40 +1,52 @@
-const FETCH_USER = 'FETCH_USER';
-const FETCH_USER_FULFILLED = 'FETCH_USER_FULFILLED';
-const MOUSE_CHANGE_XY = 'MOUSE_CHANGE_XY';
-const CONNECT_USER = 'CONNECT_USER';
-const UPDATE_USER = 'UPDATE_USER';
+import ACTION_TYPE from './constants'
 
-export const changeMouseXY = (x, y) => ({
-    type: MOUSE_CHANGE_XY,
+const changeMouseXY = (x, y) => ({
+    type: ACTION_TYPE.MOUSE_CHANGE_XY,
     payload: { x, y },
 });
 
-export const changeMouseClickPositionXY = (x, y) => ({
-    type: 'MOUSE_CLICK_POSITION_XY',
+const changeMouseClickPositionXY = (clientX, clientY) => ({
+    type: ACTION_TYPE.MOUSE_CLICK_POSITION_XY,
+    payload: { clientX, clientY },
+})
+
+const changeMouseDoubleClick = (x, y) => ({
+    type: ACTION_TYPE.MOUSE_DOUBLE_CLICK,
     payload: { x, y },
 })
 
-export const changeMouseDoubleClick = (x, y) => ({
-    type: 'MOUSE_DOUBLE_CLICK',
-    payload: { x, y },
-})
-
-export const updateUser = (user) => ({
-    type: UPDATE_USER,
+const updateUser = (user) => ({
+    type: ACTION_TYPE.UPDATE_USER,
     payload: { user },
 });
 
-export const fetchUser = (payload) => ({
-    type: FETCH_USER,
+const fetchUser = (payload) => ({
+    type: ACTION_TYPE.FETCH_USER,
     payload: payload,
 });
 
-export const fetchUserFulfilled = payload => ({
-    type: FETCH_USER_FULFILLED,
+const fetchUserFulfilled = (payload) => ({
+    type: ACTION_TYPE.FETCH_USER_FULFILLED,
     payload: payload,
 });
 
-export const connectUser = isConnected => ({
-    type: CONNECT_USER,
+const connectUser = (isConnected) => ({
+    type: ACTION_TYPE.CONNECT_USER,
     payload: isConnected,
 });
+
+const cubeRotation = (threeEulerCoordinate) => ({
+    type: ACTION_TYPE.CUBE_ROTATION,
+    payload: threeEulerCoordinate,
+});
+
+export {
+    changeMouseXY,
+    changeMouseClickPositionXY,
+    changeMouseDoubleClick,
+    connectUser,
+    fetchUser,
+    fetchUserFulfilled,
+    updateUser,
+    cubeRotation,
+};

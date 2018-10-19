@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
-import ReactDOM from 'react-dom';
+
+
 
 class Content3 extends Component {
   constructor(props, context) {
     super(props, context);
-
+    // this.onAnimate = this.onAnimate.bind(this);
     // construct the position vector here, because if we use 'new' within render,
     // React will think that things have changed when they have not.
     this.cameraPosition = new THREE.Vector3(0, 0, 5);
@@ -14,22 +16,8 @@ class Content3 extends Component {
     this.state = {
       cubeRotation: new THREE.Euler(),
     };
-
-    this._onAnimate = () => {
-      // we will get this callback every frame
-
-      // pretend cubeRotation is immutable.
-      // this helps with updates and pure rendering.
-      // React will be sure that the rotation has now updated.
-      this.setState({
-        cubeRotation: new THREE.Euler(
-          this.state.cubeRotation.x + 0.1,
-          this.state.cubeRotation.y + 0.1,
-          0
-        ),
-      });
-    };
   }
+
 
   render() {
     const width = window.innerWidth; // canvas width
@@ -38,9 +26,7 @@ class Content3 extends Component {
     return (<React3
       mainCamera="camera" // this points to the perspectiveCamera which has the name set to "camera" below
       width={width}
-      height={height}
-
-      onAnimate={this._onAnimate}>
+      height={height}>
 
       <scene>
         <perspectiveCamera
@@ -53,10 +39,10 @@ class Content3 extends Component {
           position={this.cameraPosition}
         />
         <mesh
-          rotation={this.state.cubeRotation}
+          rotation={this.props.cubeRotation}
         >
           <boxGeometry
-            width={1}
+            width={2}
             height={1}
             depth={1}
           />
@@ -68,4 +54,14 @@ class Content3 extends Component {
     </React3>);
   }
 }
- export default Content3;
+
+const mapStateToProps = (state) => {
+  return {
+    x: state.x,
+    y: state.y,
+    user: state.user,
+    isConnected: state.isConnected,
+    cubeRotation: state.cubeRotation,
+  }
+}
+ export default connect(mapStateToProps)(Content3);
